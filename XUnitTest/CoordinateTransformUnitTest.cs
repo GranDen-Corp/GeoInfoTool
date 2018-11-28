@@ -4,10 +4,10 @@ using Xunit;
 
 namespace XUnitTest
 {
-    public class UnitTest1
+    public class CoordinateTransformUnitTest
     {
         [Fact]
-        public void Test1()
+        public void TestTransformToTuple()
         {
             //Arrange
             var referenceOrigin = new ReferenceOriginWgs84Point(new Wgs84Point { Lat = 25.0783615, Lon = 121.5750212 });
@@ -17,7 +17,7 @@ namespace XUnitTest
                 Lon = 121.5749139
             };
             var desiredTargetCartesian = (X: -10.8250645005394, Y: 254.80489950534);
-            const string roundFormat = "0.##########";
+            const int precision = 7;
 
             //Act
             var transformTool = new Wgs84Transform(referenceOrigin);
@@ -25,11 +25,12 @@ namespace XUnitTest
             var transformedTarget = transformTool.TransformToCartesian(targetWgs84Point);
 
             //Assert
-            Assert.Equal(0.0.ToString(roundFormat), transformedOrigin.X.ToString(roundFormat));
-            Assert.Equal(0.0.ToString(roundFormat), transformedOrigin.Y.ToString(roundFormat));
+            Assert.Equal(0.0, transformedOrigin.X, precision);
+            Assert.Equal(0.0, transformedOrigin.Y, 6);
 
-            Assert.Equal(desiredTargetCartesian.X.ToString(roundFormat), transformedTarget.X.ToString(roundFormat));
-            Assert.Equal(desiredTargetCartesian.Y.ToString(roundFormat), transformedTarget.Y.ToString(roundFormat));
+            Assert.Equal(desiredTargetCartesian.X, transformedTarget.X, precision);
+            Assert.Equal(desiredTargetCartesian.Y, transformedTarget.Y, precision);
         }
+
     }
 }
