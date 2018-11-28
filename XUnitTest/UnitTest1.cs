@@ -28,7 +28,6 @@ namespace XUnitTest
             Assert.Equal(0.0.ToString(roundFormat), transformedOrigin.X.ToString(roundFormat));
             Assert.Equal(0.0.ToString(roundFormat), transformedOrigin.Y.ToString(roundFormat));
 
-            var xStr = desiredTargetCartesian.X.ToString(roundFormat);
             Assert.Equal(desiredTargetCartesian.X.ToString(roundFormat), transformedTarget.X.ToString(roundFormat));
             Assert.Equal(desiredTargetCartesian.Y.ToString(roundFormat), transformedTarget.Y.ToString(roundFormat));
         }
