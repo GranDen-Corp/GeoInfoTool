@@ -5,23 +5,22 @@ namespace GeoInfoTool
     public class Wgs84Point
     {
         /// <summary>
-        /// WGS84 Latitude
-        /// </summary>
-        public double Lat { get; set; }
-
-        /// <summary>
         /// WGS84 Longitude
         /// </summary>
         public double Lon { get; set; }
 
+        /// <summary>
+        /// WGS84 Latitude
+        /// </summary>
+        public double Lat { get; set; }
     }
 
     public class ReferenceOriginWgs84Point : Wgs84Point
     {
         public ReferenceOriginWgs84Point(Wgs84Point point)
         {
-            Lat = point.Lat;
             Lon = point.Lon;
+            Lat = point.Lat;
         }
         
         /// <summary>

@@ -30,6 +30,16 @@ namespace GeoInfoTool
             return (X: rawResult[0], Y: rawResult[1] + _referenceOrigin.ShiftedY);
         }
 
+        public (double Longitude, double Latitude) TransformBackToTuple(CartesianPoint xyPoint)
+        {
+            var inverseTransform = GetInverseTransform(ref _referenceOrigin);
+
+            var rawXyPoint = GetRawResult(xyPoint, _referenceOrigin);
+            var transformBackedRawData = inverseTransform.MathTransform.Transform(rawXyPoint);
+
+            return RawDataToWgs84Tuple(transformBackedRawData);
+        }
+
         public CartesianPoint TransformToCartesianPoint(Wgs84Point wgs84Point)
         {
             var transform = GetCartesianTransform(ref _referenceOrigin);
@@ -44,6 +54,16 @@ namespace GeoInfoTool
                 X = rawResult[0],
                 Y = rawResult[1] + _referenceOrigin.ShiftedY
             };
+        }
+
+        public Wgs84Point TransformBackToWgs84Point(CartesianPoint xyPoint)
+        {
+            var inverseTransform = GetInverseTransform(ref _referenceOrigin);
+
+            var rawXyPoint = GetRawResult(xyPoint, _referenceOrigin);
+            var transformBackedRawData = inverseTransform.MathTransform.Transform(rawXyPoint);
+
+            return RawDataToWgs84Point(transformBackedRawData);
         }
 
         public static (double X, double Y) TransformToCartesian(Wgs84Point wgs84Point, ref ReferenceOriginWgs84Point referenceOrigin)
@@ -74,8 +94,54 @@ namespace GeoInfoTool
             };
         }
 
+        public static (double Longitude, double Latitude) TransformBackToTuple(CartesianPoint xyPoint,ref ReferenceOriginWgs84Point referenceOrigin)
+        {
+            var inverseTransform = GetInverseTransform(ref referenceOrigin);
+
+            var rawXyPoint = GetRawResult(xyPoint, referenceOrigin);
+            var transformBackedRawData = inverseTransform.MathTransform.Transform(rawXyPoint);
+
+            return RawDataToWgs84Tuple(transformBackedRawData);
+        }
+
+        public static Wgs84Point TransformBackFromCartesian(CartesianPoint xyPoint, ref ReferenceOriginWgs84Point referenceOrigin)
+        {
+            var inverseTransform = GetInverseTransform(ref referenceOrigin);
+
+            var rawXyPoint = GetRawResult(xyPoint, referenceOrigin);
+            var transformBackedRawData = inverseTransform.MathTransform.Transform(rawXyPoint);
+
+            return RawDataToWgs84Point(transformBackedRawData);
+        }
+
         #endregion
 
+        private static double[] GetRawResult(CartesianPoint point, ReferenceOriginWgs84Point referenceOrigin)
+        {
+            return new[] {point.X, point.Y - referenceOrigin.ShiftedY};
+        }
+
+        private static (double Longitude, double Latitude) RawDataToWgs84Tuple(double[] rawResult)
+        {
+            return (Longitude: rawResult[0], Latitude: rawResult[1]);
+        }
+
+        private static Wgs84Point RawDataToWgs84Point(double[] rawResult)
+        {
+            return new Wgs84Point {Lon = rawResult[0], Lat = rawResult[1]};
+        }
+
+        private static ICoordinateTransformation GetInverseTransform(ref ReferenceOriginWgs84Point referenceOrigin)
+        {
+            if (referenceOrigin.ProjectedCoordinateSystem == null)
+            {
+                GetCartesianTransform(ref referenceOrigin);
+            }
+
+            var ctFactory = new ProjNet.CoordinateSystems.Transformations.CoordinateTransformationFactory();
+            return ctFactory.CreateFromCoordinateSystems(referenceOrigin.ProjectedCoordinateSystem,
+                GeographicCoordinateSystem.WGS84);
+        }
 
         private static ICoordinateTransformation GetCartesianTransform(ref ReferenceOriginWgs84Point referenceOrigin)
         {
@@ -107,8 +173,5 @@ namespace GeoInfoTool
 
             return transform;
         }
-
-
-        
     }
 }
