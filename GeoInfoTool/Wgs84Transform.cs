@@ -18,7 +18,7 @@ namespace GeoInfoTool
 
         #region API Methods
 
-        public (double X, double Y) TransformToCartesian(Wgs84Point wgs84Point)
+        public (double X, double Y) TransformToCartesianTuple(Wgs84Point wgs84Point)
         {
             var transform = GetCartesianTransform(ref _referenceOrigin);
             var rawResult = transform.MathTransform.Transform(new[]
@@ -66,7 +66,7 @@ namespace GeoInfoTool
             return RawDataToWgs84Point(transformBackedRawData);
         }
 
-        public static (double X, double Y) TransformToCartesian(Wgs84Point wgs84Point, ref ReferenceOriginWgs84Point referenceOrigin)
+        public static (double X, double Y) TransformToCartesianTuple(Wgs84Point wgs84Point, ref ReferenceOriginWgs84Point referenceOrigin)
         {
             var transform = GetCartesianTransform(ref referenceOrigin);
             var rawResult = transform.MathTransform.Transform(new[]
