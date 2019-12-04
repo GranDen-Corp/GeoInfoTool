@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using ProjNet.CoordinateSystems;
@@ -116,6 +115,8 @@ namespace GeoInfoTool
 
         #endregion
 
+        #region Private implmentation methods
+
         private static double[] GetRawResult(CartesianPoint point, ReferenceOriginWgs84Point referenceOrigin)
         {
             return new[] {point.X, point.Y - referenceOrigin.ShiftedY};
@@ -173,5 +174,7 @@ namespace GeoInfoTool
 
             return transform;
         }
+
+        #endregion
     }
 }
